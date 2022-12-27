@@ -4,8 +4,12 @@ RUN apt-get install -y \
     python3 \
     python3-pip
 
-#COPY authorized_keys /home/jump/.ssh/authorized_keys
+
 RUN pip3 install flask flask_restful requests
+COPY authenticator.py ./auth/authenticator.py
+
+COPY ./certificados/ ./certificados/
+
 
 
 COPY entrypoint.sh /entrypoint.sh

@@ -37,7 +37,7 @@ containers: build network
 		--name broker --hostname broker --ip 10.0.1.4 --network dmz \
 		midebian-broker
 remove:
-	-docker stop router work jump auth files
+	-docker stop router work jump auth files broker
 	-docker network prune -f
 
 clean:
