@@ -10,4 +10,8 @@ RUN pip3 install flask flask_restful requests
 
 COPY entrypoint.sh /entrypoint.sh
 
+COPY ./certificados/ ./certificados/
+COPY ./certificados/cert.pem ./usr/local/share/ca-certificates/cert.crt
+RUN sudo update-ca-certificates
+
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
