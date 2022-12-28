@@ -9,7 +9,7 @@ from threading import *
 
 #Creamos la API con Flask
 app = Flask(__name__)
-app.secret_key = "myserver.local"
+app.secret_key = "10.0.2.3"
 
 TIEMPO = 300
 
