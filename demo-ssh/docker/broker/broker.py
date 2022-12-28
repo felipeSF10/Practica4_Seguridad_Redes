@@ -51,4 +51,4 @@ class Login():
 if __name__ == '__main__':
     # __init__()
     context = ('/certificados/cert.pem','/certificados/key.pem') #ruta del certificado y de la key
-    app.run(debug = True, ssl_context=context)  
+    app.run(host = '10.0.1.4',debug = True, ssl_context=context)  
