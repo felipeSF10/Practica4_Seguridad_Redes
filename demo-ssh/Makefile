@@ -22,8 +22,8 @@ containers: build network
 		--name jump --hostname jump --ip 10.0.1.3 --network dmz midebian-jump
 
 	docker run --privileged --rm -ti -d \
-		--name work --hostname work --ip 10.0.3.3 --network dev \
-		midebian-work
+		--name broker --hostname broker --ip 10.0.1.4 --network dmz \
+		midebian-broker
 
 	docker run --privileged --rm -ti -d \
 		--name auth --hostname auth --ip 10.0.2.3 --network srv \
@@ -34,11 +34,16 @@ containers: build network
 		midebian-files
 
 	docker run --privileged --rm -ti -d \
-		--name broker --hostname broker --ip 10.0.1.4 --network dmz \
-		midebian-broker
+		--name work --hostname work --ip 10.0.3.3 --network dev \
+		midebian-work	
+
+	
 remove:
 	-docker stop router work jump auth files broker
 	-docker network prune -f
 
 clean:
 	find . -name "*~" -delete
+
+all: remove clean build network containers
+	

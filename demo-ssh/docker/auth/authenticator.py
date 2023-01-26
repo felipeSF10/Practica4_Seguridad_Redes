@@ -65,6 +65,7 @@ def comprobarInicioSesion(usuario, hash, file):
 class SignUp():
     @app.route('/signup', methods = ['POST'])#ruta de la funcion
     def SignUp_POST():
+        print("+++ Testing /signup... ")
         usuario = request.get_json().get('username','')
         contrasena = request.get_json().get('password', '')
         err = validarUsuarioYContrasena(usuario, contrasena)
@@ -123,5 +124,5 @@ class Login():
     
 if __name__ == '__main__':
     # __init__()
-    context = ('/certificados/cert.pem','/certificados/key.pem') #ruta del certificado y de la key
+    context = ('/certificados/auth.pem','/certificados/authkey2.pem') #ruta del certificado y de la key
     app.run(host = '10.0.2.3',debug = True, ssl_context=context)
