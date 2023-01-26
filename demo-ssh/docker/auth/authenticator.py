@@ -74,7 +74,9 @@ class SignUp():
         try:
             file = open(".shadow", mode = '+r')
         except FileNotFoundError:
-            return jsonify({"Error": "Archivo no encontrado "}), 404
+            with open(".shadow", "w") as shadow_file:
+                shadow_file.write("")
+            file = open(".shadow", mode = '+r')
 
         if not existeUsuario(usuario, file):
             hash = hashlib.sha256(contrasena.encode('utf-8')).hexdigest()
@@ -94,7 +96,8 @@ class SignUp():
             file.close()
             return jsonify({"Error": "El nombre de usuario ya existe"})
 
-        return jsonify({'acces_token': acces_token})
+        #return jsonify({'acces_token': acces_token})
+        return jsonify(acces_token)
 
 class Login():
     @app.route('/login', methods = ['POST'])#ruta de la funcion
@@ -106,7 +109,35 @@ class Login():
         try:
             file = open(".shadow", mode = '+r')
         except FileNotFoundError:
-            return jsonify({"Error": "Archivo no encontrado "}), 404
+            with open(".shadow", "w") as shadow_file:
+                shadow_file.write("")
+            file = open(".shadow", mode = '+r')
+
+        hash = hashlib.sha256(contrasena.encode('utf-8')).hexdigest()
+        if comprobarInicioSesion(usuario, hash, file):
+            acces_token = str(uuid4())
+            file.close()
+            diccionario_tokens[usuario] = acces_token
+            t = Timer(TIEMPO, refreshAuthorization, [usuario])
+            t.start()         
+        else:
+            file.close()
+            return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 400
+        return jsonify({'acces_token': acces_token})
+
+class Autenticar():
+    @app.route('/autenticar', methods = ['POST'])#ruta de la funcion
+    def Autenticar_POST():
+        usuario = request.get_json().get('username','')
+        print(usuario)
+        contrasena = request.get_json().get('password', '')
+        print(contrasena)
+        try:
+            file = open(".shadow", mode = '+r')
+        except FileNotFoundError:
+            with open(".shadow", "w") as shadow_file:
+                shadow_file.write("")
+            file = open(".shadow", mode = '+r')
 
         hash = hashlib.sha256(contrasena.encode('utf-8')).hexdigest()
         if comprobarInicioSesion(usuario, hash, file):
