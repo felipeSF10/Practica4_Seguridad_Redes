@@ -9,6 +9,7 @@ RUN pip3 install flask flask_restful requests
 
 
 COPY entrypoint.sh /entrypoint.sh
+COPY files.py files.py
 
 COPY certificados ./certificados
 COPY ./certificados/files.pem ./usr/local/share/ca-certificates/cert.crt

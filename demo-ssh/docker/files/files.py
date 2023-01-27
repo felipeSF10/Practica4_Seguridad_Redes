@@ -1,17 +1,19 @@
 from flask import Flask, jsonify
 import os
-# from os import remove
+from os import remove
 from flask import request
 import hashlib
 from uuid import uuid4
 from threading import *
-# import json
+import json
+import requests
 
 #Creamos la API con Flask
 app = Flask(__name__)
 app.secret_key = "10.0.2.4"
+URL_AUTH = "https://10.0.2.3:5000"
 
-def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
+def _req(path, URL, data=None, method="GET", verify=False, check=True, token=None):
     if data:
         data = json.dumps(data)
 
@@ -25,8 +27,8 @@ def _req(path, URL, data=None, method="GET", verify=False, check=False, token=No
     return r
 
 def autenticacion(usuario, token):
-    r = _req("signup", URL_AUTH, data={"username": user, "password": passw}, method="POST", verify='/certificados/auth.pem')
-    return False
+    return _req("autenticar", URL_AUTH, data={"username": usuario}, method="POST", verify='/certificados/auth.pem', check=True, token=token)
+    
 
 class ExploradorDocumentos():
     @app.route('/<string:username>/<string:doc_id>', methods = ['GET', 'POST', 'PUT', 'DELETE'])#ruta de la funcion
