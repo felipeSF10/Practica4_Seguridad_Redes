@@ -87,13 +87,7 @@ class SignUp():
             diccionario_tokens[usuario] = access_token
             t = Timer(TIEMPO, refreshAuthorization, [usuario])
             t.start()
-            if not os.path.exists("usuarios/"+ usuario):
-                try:
-                    os.mkdir("usuarios/" + usuario)
-                except OSError:
-                    print("No se ha podido crear el directorio 'usuarios'")
         else:
-            file.close()
             return jsonify({"Error": "El nombre de usuario ya existe"}), 409
 
         return jsonify({'access_token': access_token})

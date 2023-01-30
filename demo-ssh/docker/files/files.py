@@ -67,7 +67,7 @@ def all_docs_GET(username):
             
 def Doc_GET(username, doc_id):
     if request.form.__len__() == 0:
-            auth = request.headers.get('Authorization')
+        auth = request.headers.get('Authorization')
     else:
         return jsonify({"Error": "En la entrada de datos"}), 400
     type,token = auth.split(" ",1)
@@ -98,7 +98,7 @@ def Doc_POST(username, doc_id):
                 try:
                     os.mkdir("usuarios/" + username)
                 except OSError:
-                    print("No se ha podido crear el directorio 'usuarios'")
+                    return jsonify({"Error": "No se ha podido crear el directorio 'usuarios'"}), 403
         elif os.path.exists(ruta):
             return jsonify({"Error": "El fichero ya existe, mejor utilizar la funcion PUT"}), 405
         try:

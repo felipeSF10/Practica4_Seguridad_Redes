@@ -41,7 +41,8 @@ class Login():
         passw = request.get_json().get('password', '')
         r = _req("login", URL_AUTH, data={"username": user, "password": passw}, method="POST", verify='/certificados/auth.pem')
         if r.status_code != 200:
-            return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 400
+            error_message = json.loads(r.text)
+            return jsonify({"Error" : error_message["Error"]}), r.status_code
         return jsonify(r.json())
 
 class SignUp():
@@ -53,7 +54,8 @@ class SignUp():
         #r = requests.post(URL + "/signup",json={"username":user, "password": passw}, verify='/certificados/auth.pem')
         print("Respuesta de Authenticator: ",r.status_code)
         if r.status_code != 200:
-            return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 400
+            error_message = json.loads(r.text)
+            return jsonify({"Error" : error_message["Error"]}), r.status_code
         return jsonify(r.json())
 
 class ExploradorDocumentos():
@@ -62,9 +64,6 @@ class ExploradorDocumentos():
         #user = request.get_json().get('username','')
         auth = request.headers.get('Authorization')
         type,token = auth.split(" ",1)
-        print("***************")
-        print(request.method)
-        print("^^^^^^^^^^^^^^^")
         if request.method == 'POST' or request.method == 'PUT':
             contenido = request.get_json().get('doc_content', '')
             r = _req(f"{username}/{doc_id}", URL_FILES, data={"doc_content": contenido}, method=request.method, verify='/certificados/files.pem', token=token)     
@@ -72,12 +71,9 @@ class ExploradorDocumentos():
             r = _req(f"{username}/{doc_id}", URL_FILES, method=request.method, verify='/certificados/files.pem', token=token)
         if r.status_code != 200:
             error_message = json.loads(r.text)
-            #error_message = r.json().get('Error')
-            return jsonify({"Error" : error_message["Error"]}), 400
+            return jsonify({"Error" : error_message["Error"]}), r.status_code
         return jsonify(r.json())
         
-       
-
 
 if __name__ == '__main__':
     # __init__()
