@@ -16,7 +16,7 @@ VERSION = "1.0.1"
 URL_AUTH = "https://10.0.2.3:5000"
 URL_FILES = "https://10.0.2.4:5000" 
 
-def _req(path, URL, data=None, method="GET", verify=False, check=True, token=None):
+def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
     if data:
         data = json.dumps(data)
 
@@ -41,7 +41,7 @@ class Login():
         passw = request.get_json().get('password', '')
         r = _req("login", URL_AUTH, data={"username": user, "password": passw}, method="POST", verify='/certificados/auth.pem')
         if r.status_code != 200:
-            return jsonify({"Error": "La contrasena o el usuario es incorrecto"})
+            return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 400
         return jsonify(r.json())
 
 class SignUp():
@@ -59,14 +59,24 @@ class SignUp():
 class ExploradorDocumentos():
     @app.route('/<string:username>/<string:doc_id>', methods = ['GET', 'POST', 'PUT', 'DELETE'])#ruta de la funcion
     def ExploradorDoc(username, doc_id):
-        user = request.get_json().get('username','')
-        contenido = request.get_json().get('doc_content', '')
+        #user = request.get_json().get('username','')
         auth = request.headers.get('Authorization')
         type,token = auth.split(" ",1)
-        if request.method == 'GET':
-            return _req(f"{user}/{doc_id}", URL_FILES, data=None, method="GET", verify='/certificados/files.pem', check=True, token=token)
+        print("***************")
+        print(request.method)
+        print("^^^^^^^^^^^^^^^")
+        if request.method == 'POST' or request.method == 'PUT':
+            contenido = request.get_json().get('doc_content', '')
+            r = _req(f"{username}/{doc_id}", URL_FILES, data={"doc_content": contenido}, method=request.method, verify='/certificados/files.pem', token=token)     
         else:
-            return _req(f"{user}/{doc_id}", URL_FILES, data={"doc_content": contenido}, method="POST", verify='/certificados/files.pem', check=True, token=token)
+            r = _req(f"{username}/{doc_id}", URL_FILES, method=request.method, verify='/certificados/files.pem', token=token)
+        if r.status_code != 200:
+            error_message = json.loads(r.text)
+            #error_message = r.json().get('Error')
+            return jsonify({"Error" : error_message["Error"]}), 400
+        return jsonify(r.json())
+        
+       
 
 
 if __name__ == '__main__':

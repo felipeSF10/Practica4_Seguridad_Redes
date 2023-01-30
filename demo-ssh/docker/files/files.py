@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = "10.0.2.4"
 URL_AUTH = "https://10.0.2.3:5000"
 
-def _req(path, URL, data=None, method="GET", verify=False, check=True, token=None):
+def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
     if data:
         data = json.dumps(data)
 
@@ -27,9 +27,8 @@ def _req(path, URL, data=None, method="GET", verify=False, check=True, token=Non
     return r
 
 def autenticacion(usuario, token):
-    return _req("autenticar", URL_AUTH, data={"username": usuario}, method="POST", verify='/certificados/auth.pem', check=True, token=token)
+    return _req("autenticar", URL_AUTH, data={"username": usuario}, method="POST", verify='/certificados/auth.pem', token=token)
     
-
 class ExploradorDocumentos():
     @app.route('/<string:username>/<string:doc_id>', methods = ['GET', 'POST', 'PUT', 'DELETE'])#ruta de la funcion
     def ExploradorDoc(username, doc_id):
@@ -48,7 +47,8 @@ class ExploradorDocumentos():
 def all_docs_GET(username):
     auth = request.headers.get('Authorization')
     type,token = auth.split(" ",1)
-    if autenticacion(username, token):
+    r = autenticacion(username, token)
+    if r.status_code == 200:
         ruta = "usuarios/" + username
         data_all = {}
         try:
@@ -71,7 +71,8 @@ def Doc_GET(username, doc_id):
     else:
         return jsonify({"Error": "En la entrada de datos"}), 400
     type,token = auth.split(" ",1)
-    if autenticacion(username, token):
+    r = autenticacion(username, token)
+    if r.status_code == 200:
         ruta = "usuarios/" + username + "/" + doc_id
         try:
             with open(ruta) as fichero:
@@ -90,7 +91,8 @@ def Doc_POST(username, doc_id):
     if not extension in doc_id:
         doc_id = doc_id + ".json"
     #return jsonify({"Error": "El archivo debe ser un .json"}), 400
-    if autenticacion(username, token):
+    r = autenticacion(username, token)
+    if r.status_code == 200:
         ruta = "usuarios/" + username + "/" + doc_id
         if not os.path.exists("usuarios/"+ username):
                 try:
@@ -98,7 +100,7 @@ def Doc_POST(username, doc_id):
                 except OSError:
                     print("No se ha podido crear el directorio 'usuarios'")
         elif os.path.exists(ruta):
-            return {"Notificacion": "El fichero ya existe, mejor utilizar la funcion PUT"}, 405
+            return jsonify({"Error": "El fichero ya existe, mejor utilizar la funcion PUT"}), 405
         try:
             with open(ruta, 'w') as fichero:
                 json.dump(contenido, fichero, indent=4)
@@ -116,7 +118,8 @@ def Doc_PUT(username, doc_id):
     else:
         return jsonify({"Error": "En la entrada de datos"}), 400
     type,token = auth.split(" ",1)
-    if autenticacion(username, token):
+    r = autenticacion(username, token)
+    if r.status_code == 200:
         ruta = "usuarios/" + username + "/" + doc_id + ".json"
         if not os.path.exists(ruta):
                 return jsonify({"Error": "El documento no existe"}), 404
@@ -135,7 +138,8 @@ def Doc_DELETE(username, doc_id):
     else:
         return jsonify({"Error": "En la entrada de datos"}), 400
     type,token = auth.split(" ",1)
-    if autenticacion(username, token):
+    r = autenticacion(username, token)
+    if r.status_code == 200:
         ruta = "usuarios/" + username + "/" + doc_id + ".json"
         if os.path.exists(ruta):
                 remove(ruta)

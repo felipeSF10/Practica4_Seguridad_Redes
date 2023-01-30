@@ -11,6 +11,8 @@ RUN pip3 install flask flask_restful requests
 COPY entrypoint.sh /entrypoint.sh
 COPY files.py files.py
 
+RUN mkdir usuarios
+
 COPY certificados ./certificados
 COPY ./certificados/files.pem ./usr/local/share/ca-certificates/cert.crt
 RUN sudo update-ca-certificates

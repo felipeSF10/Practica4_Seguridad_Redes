@@ -94,7 +94,7 @@ class SignUp():
                     print("No se ha podido crear el directorio 'usuarios'")
         else:
             file.close()
-            return jsonify({"Error": "El nombre de usuario ya existe"})
+            return jsonify({"Error": "El nombre de usuario ya existe"}), 409
 
         return jsonify({'access_token': access_token})
 
@@ -121,7 +121,7 @@ class Login():
             t.start()         
         else:
             file.close()
-            return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 400
+            return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 401
         return jsonify({'access_token': access_token})
 
 class Autenticar():
@@ -132,8 +132,8 @@ class Autenticar():
         type,token = auth.split(" ",1)
         if usuario in diccionario_tokens:
             if diccionario_tokens[usuario] == token:
-                return True
-        return False
+                return {}, 200
+        return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 401
 
     
 if __name__ == '__main__':
