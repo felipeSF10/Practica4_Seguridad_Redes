@@ -1,1 +1,2 @@
 op ALL=(ALL) NOPASSWD:ALL
+dev ALL=(ALL) ALL
