@@ -37,6 +37,9 @@ containers: build network
 		--name work --hostname work --ip 10.0.3.3 --network dev \
 		midebian-work	
 
+ssh:
+	ssh ssh-add docker/assets/op
+	ssh-add docker/assets/dev
 	
 remove:
 	-docker stop router work jump auth files broker

@@ -16,6 +16,7 @@ ip route add default via 10.0.1.2 dev eth0
 
 echo -e "Match Address 10.0.1.2\n  AllowUsers jump\n" >> /etc/ssh/sshd_config
 echo -e "Match Address 10.0.3.3\n  AllowUsers op\n" >> /etc/ssh/sshd_config
+#echo -e "Match Address 10.0.3.3\n  AllowUsers dev\n" >> /etc/ssh/sshd_config
 
 service ssh start
 service rsyslog start
