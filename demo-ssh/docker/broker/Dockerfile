@@ -8,7 +8,7 @@ RUN apt-get install -y \
 RUN pip3 install flask flask_restful requests
 COPY broker.py broker.py
 COPY certificados ./certificados
-COPY ./certificados/broker.pem ./usr/local/share/ca-certificates/cert.crt
+COPY ./certificados/broker.crt ./usr/local/share/ca-certificates/cert.crt
 RUN sudo update-ca-certificates
 
 COPY entrypoint.sh /entrypoint.sh

@@ -11,12 +11,12 @@ import requests
 
 #Creamos la API con Flask
 app = Flask(__name__)
-app.secret_key = "myserver.local"
+app.secret_key = "broker"
 VERSION = "1.0.1"
 URL_AUTH = "https://10.0.2.3:5000"
 URL_FILES = "https://10.0.2.4:5000" 
 
-def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
+def _req(path, URL, data=None, method="GET", verify=False, check=True, token=None):
     if data:
         data = json.dumps(data)
 
@@ -77,5 +77,5 @@ class ExploradorDocumentos():
 
 if __name__ == '__main__':
     # __init__()
-    context = ('/certificados/broker.pem','/certificados/brokerkey2.pem') #ruta del certificado y de la key
-    app.run(host = '10.0.1.4',debug = True, ssl_context=context)  
+    context = ('certificados/broker.crt','certificados/brokerkey2.key') #ruta del certificado y de la key
+    app.run(host = '10.0.1.4',debug = True, ssl_context=context)

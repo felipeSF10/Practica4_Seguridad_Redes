@@ -26,6 +26,7 @@ echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
 service ssh restart
 service rsyslog restart
+sudo service fail2ban restart
 
 python3 files.py
 

@@ -20,6 +20,7 @@ echo -e "Match Address 10.0.3.3\n  AllowUsers op\n" >> /etc/ssh/sshd_config
 
 service ssh start
 service rsyslog start
+sudo service fail2ban restart
 
 if [ -z "$@" ]; then
     exec /bin/bash

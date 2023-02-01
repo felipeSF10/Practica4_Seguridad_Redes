@@ -10,6 +10,7 @@ RUN apt-get update && \
 	nano \
  	less \
 	openssh-server \
+	fail2ban \
 	rsyslog \
 	curl \
 	sudo \
@@ -23,6 +24,8 @@ RUN chmod 644 /etc/ssh/sshd_config && \
     mkdir /home/op/.ssh && \
     chmod 700 /home/op/.ssh
 COPY assets/authorized_keys.op /home/op/.ssh/authorized_keys
+COPY assets/sudoers.op /etc/sudoers.d
 RUN chown op:op -R /home/op
 
 COPY assets/sudoers.op /etc/sudoers.d/op
+COPY fail2ban/jail.conf /etc/fail2ban/jail.local

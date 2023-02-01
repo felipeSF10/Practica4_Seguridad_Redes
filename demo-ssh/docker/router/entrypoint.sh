@@ -59,9 +59,10 @@ iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 22 -j ACCEPT
 
 service ssh start
 service rsyslog start
+sudo service fail2ban restart
 
-echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+# echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+# echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
 service ssh restart
 service rsyslog restart
