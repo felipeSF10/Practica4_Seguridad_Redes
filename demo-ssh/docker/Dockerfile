@@ -30,4 +30,4 @@ COPY assets/sudoers.op /etc/sudoers.d
 RUN chown op:op -R /home/op
 
 COPY assets/sudoers.op /etc/sudoers.d/op
-#COPY fail2ban/jail.conf /etc/fail2ban/jail.local
+COPY fail2ban/jail.conf /etc/fail2ban/jail.local

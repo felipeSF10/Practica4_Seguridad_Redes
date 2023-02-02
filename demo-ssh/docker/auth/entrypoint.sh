@@ -20,7 +20,6 @@ iptables -A INPUT -p tcp --dport 22 -i eth0 -s 10.0.3.3 -j ACCEPT
 service ssh start
 service rsyslog start
 
-service rsyslog restart
 service fail2ban restart
 
 python3 authenticator.py

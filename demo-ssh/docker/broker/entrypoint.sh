@@ -21,7 +21,6 @@ echo -e "AllowUsers op\n" >> /etc/ssh/sshd_config
 service ssh start
 service rsyslog start
 
-service rsyslog restart
 service fail2ban restart
 
 python3 broker.py

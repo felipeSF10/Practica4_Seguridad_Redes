@@ -35,7 +35,7 @@ containers: build network
 
 	docker run --privileged --rm -ti -d \
 		--name work --hostname work --ip 10.0.3.3 --network dev \
-		midebian-work	
+		midebian-work
 
 ssh:
 	ssh-add docker/assets/op

@@ -55,7 +55,6 @@ iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 22 -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 22 -j ACCEPT
 
 
-
 #Puerto 514 Rsyslog
 #Red dmz
 iptables -A INPUT -p udp -i eth1 --dport 514 -s 10.0.1.0/24 -j ACCEPT
@@ -73,12 +72,8 @@ iptables -A FORWARD -i eth3 -o eth2 -p udp --sport 514 -j ACCEPT
 
 service ssh start
 service rsyslog start
+
 service fail2ban restart
-
-# echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-# echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
-
-service rsyslog restart
 
 if [ -z "$@" ]; then
     exec /bin/bash
