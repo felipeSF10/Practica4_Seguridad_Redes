@@ -38,8 +38,9 @@ containers: build network
 		midebian-work	
 
 ssh:
-	ssh ssh-add docker/assets/op
+	ssh-add docker/assets/op
 	ssh-add docker/assets/dev
+	ssh-keyscan -H 10.0.3.3 >> ~/.ssh/known_hosts
 	
 remove:
 	-docker stop router work jump auth files broker

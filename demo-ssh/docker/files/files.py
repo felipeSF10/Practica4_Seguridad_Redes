@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = "10.0.2.4"
 URL_AUTH = "https://10.0.2.3:5000"
 
-def _req(path, URL, data=None, method="GET", verify=False, check=True, token=None):
+def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
     if data:
         data = json.dumps(data)
 

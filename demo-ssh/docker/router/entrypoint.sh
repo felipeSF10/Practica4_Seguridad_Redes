@@ -18,8 +18,6 @@ iptables -A FORWARD -i eth1 -o eth0 -m state --state ESTABLISHED,RELATED -j ACCE
 iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 22 -j DNAT --to-destination 10.0.1.3
 iptables -t nat -A POSTROUTING -o eth1 -p tcp --dport 22 -s 172.17.0.0/16 -d 10.0.1.3 -j SNAT --to-source 10.0.1.2
 
-
-
 # #Prueba 443
 # iptables -A FORWARD -p tcp --dport 443 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 # iptables -A FORWARD -p tcp --sport 443 -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -57,14 +55,29 @@ iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 22 -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 22 -j ACCEPT
 
 
+
+#Puerto 514 Rsyslog
+#Red dmz
+iptables -A INPUT -p udp -i eth1 --dport 514 -s 10.0.1.0/24 -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth3 -p udp --dport 514 -j ACCEPT
+iptables -A FORWARD -i eth3 -o eth1 -p udp --sport 514 -j ACCEPT
+
+#Red srv
+iptables -A INPUT -p udp -i eth3 --dport 514 -s 10.0.2.0/24 -j ACCEPT
+iptables -A FORWARD -i eth3 -o eth3 -p udp --dport 514 -j ACCEPT
+
+#Red dev
+iptables -A INPUT -p udp -i eth2 --dport 514 -s 10.0.3.0/24 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth3 -p udp --dport 514 -j ACCEPT
+iptables -A FORWARD -i eth3 -o eth2 -p udp --sport 514 -j ACCEPT
+
 service ssh start
 service rsyslog start
-sudo service fail2ban restart
+service fail2ban restart
 
 # echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 # echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
-service ssh restart
 service rsyslog restart
 
 if [ -z "$@" ]; then

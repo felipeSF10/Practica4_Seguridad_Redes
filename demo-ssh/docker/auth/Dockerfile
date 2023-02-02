@@ -6,12 +6,12 @@ RUN apt-get install -y \
 
 
 RUN pip3 install flask flask_restful requests
+
 COPY authenticator.py authenticator.py
+COPY certificados /certificados
 
-COPY certificados ./certificados
-COPY ./certificados/auth.pem ./usr/local/share/ca-certificates/cert.crt
-RUN sudo update-ca-certificates
-
+RUN chmod -R 644 certificados
+RUN chmod -R 744 authenticator.py
 
 COPY entrypoint.sh /entrypoint.sh
 

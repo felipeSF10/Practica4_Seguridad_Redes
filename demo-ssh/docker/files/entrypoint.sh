@@ -21,12 +21,11 @@ echo "10.0.2.4    files" >> /etc/hosts
 service ssh start
 service rsyslog start
 
-echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+# echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+# echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
-service ssh restart
 service rsyslog restart
-sudo service fail2ban restart
+service fail2ban restart
 
 python3 files.py
 

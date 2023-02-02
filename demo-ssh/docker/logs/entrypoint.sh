@@ -20,9 +20,8 @@ ip route add default via 10.0.3.2 dev eth0
 service ssh start
 service rsyslog start
 
-service ssh restart
 service rsyslog restart
-sudo service fail2ban restart
+service fail2ban restart
 
 if [ -z "$@" ]; then
     exec /bin/bash
