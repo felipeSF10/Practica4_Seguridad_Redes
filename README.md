@@ -8,6 +8,7 @@ URL del proyecto en Github https://github.com/felipeSF10/Practica4_Seguridad_Red
 Antes de comenzar debemos de situarnos dentro de la carpeta demo-ssh.
 ### "make certificado"
 Como primer paso debemos copiar el certificado del nodo broker en nuestro sistema para poder utilizar el protocolo https.
+Es necesario el uso de sudo para copiar y actualizar los certificados.
 ### "make all"
 Iniciaremos el entorno de practicas realizando el comando 'make all' el cual realizara un build de los diferentes docker, un network para la configuración de la red del sistema distribuido y un container para la inicialización de los contenedores.
 ### "make ssh"

@@ -42,6 +42,10 @@ ssh:
 	ssh-add docker/assets/dev
 #	Comando por si queremos reconocer el nodo work al usar ssh
 # 	ssh-keyscan -H 10.0.3.3 >> ~/.ssh/known_hosts
+
+certificado:
+	sudo cp docker/broker/certificados/broker.crt /usr/local/share/ca-certificates
+	sudo update-ca-certificates
 	
 remove:
 	-docker stop router work jump auth files broker
