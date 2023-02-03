@@ -7,6 +7,7 @@ iptables -P OUTPUT ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -p icmp -j ACCEPT
 
+#Remplazar la ruta predeterminada al gateway
 ip route replace default via 10.0.2.2 dev eth0
 
 #Puerto 5000 Servicios API 

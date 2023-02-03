@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 import os
 from os import remove
 from flask import request
-import hashlib
 from uuid import uuid4
 from threading import *
 import json
@@ -10,9 +9,10 @@ import requests
 
 #Creamos la API con Flask
 app = Flask(__name__)
-app.secret_key = "10.0.2.4"
-URL_AUTH = "https://10.0.2.3:5000"
+app.secret_key = "files"
+URL_AUTH = "https://10.0.2.3:5000" #URL del autenticator
 
+#Metodo para hacer las requests
 def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
     if data:
         data = json.dumps(data)
@@ -27,8 +27,8 @@ def _req(path, URL, data=None, method="GET", verify=False, check=False, token=No
     return r
 
 def autenticacion(usuario, token):
-    return _req("autenticar", URL_AUTH, data={"username": usuario}, method="POST", verify='/certificados/auth.pem', token=token)
-    
+    return _req("autenticar", URL_AUTH, data={"username": usuario}, method="POST", verify='/certificados/auth.pem', token=token) #peticion al autenticator que nos devolvera el estado 200 si 
+                                                                                                                                 #las credenciales del usuario son correctas
 class ExploradorDocumentos():
     @app.route('/<string:username>/<string:doc_id>', methods = ['GET', 'POST', 'PUT', 'DELETE'])#ruta de la funcion
     def ExploradorDoc(username, doc_id):
@@ -47,7 +47,7 @@ class ExploradorDocumentos():
 def all_docs_GET(username):
     auth = request.headers.get('Authorization')
     type,token = auth.split(" ",1)
-    r = autenticacion(username, token)
+    r = autenticacion(username, token) 
     if r.status_code == 200:
         ruta = "usuarios/" + username
         data_all = {}
@@ -90,15 +90,14 @@ def Doc_POST(username, doc_id):
     extension = ".json"
     if not extension in doc_id:
         doc_id = doc_id + ".json"
-    #return jsonify({"Error": "El archivo debe ser un .json"}), 400
     r = autenticacion(username, token)
     if r.status_code == 200:
         ruta = "usuarios/" + username + "/" + doc_id
         if not os.path.exists("usuarios/"+ username):
-                try:
-                    os.mkdir("usuarios/" + username)
-                except OSError:
-                    return jsonify({"Error": "No se ha podido crear el directorio 'usuarios'"}), 403
+            try:
+                os.mkdir("usuarios/" + username)
+            except OSError:
+                return jsonify({"Error": "No se ha podido crear el directorio 'usuarios'"}), 403
         elif os.path.exists(ruta):
             return jsonify({"Error": "El fichero ya existe, mejor utilizar la funcion PUT"}), 405
         try:

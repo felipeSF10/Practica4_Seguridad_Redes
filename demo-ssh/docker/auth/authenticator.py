@@ -1,15 +1,12 @@
 from flask import Flask, jsonify
-import os
-# from os import remove
 from flask import request
 import hashlib
 from uuid import uuid4
 from threading import *
-# import json
 
 #Creamos la API con Flask
 app = Flask(__name__)
-app.secret_key = "10.0.2.3"
+app.secret_key = "auth"
 
 TIEMPO = 300
 
@@ -118,6 +115,7 @@ class Login():
             return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 401
         return jsonify({'access_token': access_token})
 
+#Clase utilizada para responder las peticiones provenientes del broker y de files para comprobar las credenciales del usuario
 class Autenticar():
     @app.route('/autenticar', methods = ['POST'])#ruta de la funcion
     def Autenticar_POST():
@@ -126,7 +124,7 @@ class Autenticar():
         type,token = auth.split(" ",1)
         if usuario in diccionario_tokens:
             if diccionario_tokens[usuario] == token:
-                return {}, 200
+                return {}, 200  #Si las credenciales son correctas manda una respuesta vacia con el estado 200
         return jsonify({"Error": "La contrasena o el usuario es incorrecto"}), 401
 
     

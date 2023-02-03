@@ -1,21 +1,16 @@
 from flask import Flask, jsonify
-import os
-from os import remove
 from flask import request
-import hashlib
-from uuid import uuid4
-from threading import *
 import json
 import requests
-
 
 #Creamos la API con Flask
 app = Flask(__name__)
 app.secret_key = "broker"
-VERSION = "1.0.1"
-URL_AUTH = "https://10.0.2.3:5000"
-URL_FILES = "https://10.0.2.4:5000" 
+VERSION = "2.0.1"
+URL_AUTH = "https://10.0.2.3:5000"  #URL del autenticator
+URL_FILES = "https://10.0.2.4:5000"     #URL de Files
 
+#Metodo para hacer los requests al autenticator o a files
 def _req(path, URL, data=None, method="GET", verify=False, check=False, token=None):
     if data:
         data = json.dumps(data)
@@ -40,8 +35,8 @@ class Login():
         user = request.get_json().get('username','')
         passw = request.get_json().get('password', '')
         r = _req("login", URL_AUTH, data={"username": user, "password": passw}, method="POST", verify='/certificados/auth.pem')
-        if r.status_code != 200:
-            error_message = json.loads(r.text)
+        if r.status_code != 200:    #Si el estado de la peticion es diferente a 200, devolvemos el mensaje de error que nos ha devuelto el autenticator
+            error_message = json.loads(r.text)  #obtiene el mensaje de la peticion
             return jsonify({"Error" : error_message["Error"]}), r.status_code
         return jsonify(r.json())
 
@@ -51,7 +46,6 @@ class SignUp():
         user = request.get_json().get('username','')
         passw = request.get_json().get('password', '')
         r = _req("signup", URL_AUTH, data={"username": user, "password": passw}, method="POST", verify='/certificados/auth.pem')
-        #r = requests.post(URL + "/signup",json={"username":user, "password": passw}, verify='/certificados/auth.pem')
         print("Respuesta de Authenticator: ",r.status_code)
         if r.status_code != 200:
             error_message = json.loads(r.text)
@@ -66,12 +60,12 @@ class ExploradorDocumentos():
         type,token = auth.split(" ",1)
         if request.method == 'POST' or request.method == 'PUT':
             contenido = request.get_json().get('doc_content', '')
-            r = _req(f"{username}/{doc_id}", URL_FILES, data={"doc_content": contenido}, method=request.method, verify='/certificados/files.pem', token=token)     
+            r = _req(f"{username}/{doc_id}", URL_FILES, data={"doc_content": contenido}, method=request.method, verify='/certificados/files.pem', token=token)
         else:
-            r = _req(f"{username}/{doc_id}", URL_FILES, method=request.method, verify='/certificados/files.pem', token=token)
+            r = _req(f"{username}/{doc_id}", URL_FILES, method=request.method, verify='/certificados/files.pem', token=token) #Peticiones GET, GET_ALL_DOCS y DELETE como tienen la misma estructura
         if r.status_code != 200:
             error_message = json.loads(r.text)
-            return jsonify({"Error" : error_message["Error"]}), r.status_code
+            return jsonify({"Error" : error_message["Error"]}), r.status_code #Devuelve el mensaje erroneo devuelto en la peticion y el estado de la peticion
         return jsonify(r.json())
         
 
